@@ -16,21 +16,48 @@ module.exports = function(path) {
   };
 };
 
-var getPosts = function(err, callback) {
+var getPosts = function() {
   return fs_readdir(postsPath).
     then(getFileBodies).
-    done(callback, err);
+    then(parseFileBodies).
+    then(rejectDuplicates);
 };
 
 var getFileBodies = function(fileNames) {
-  var promises = fileNames.map(function(fileName) {
+  var fileBodiesPromises = fileNames.map(function(fileName) {
     return fs_readfile(path.join(postsPath, fileName), 'utf8');
   });
 
-  var result = Q.all(promises).
-    then(function(messages) {
-      return messages.map(JSON.parse);
-    });
+  return fileBodiesPromises;
+};
 
-  return result;
+var parseFileBodies = function(fileBodies) {
+  var parsedBodiesPromises = Q.all(fileBodies).
+  then(function(messages) {
+    return messages.map(JSON.parse);
+  });
+  
+  return parsedBodiesPromises;
+};
+
+var rejectDuplicates = function(parsedBodies) {
+  var ids = parsedBodies.map(function(body) { return body.id; });
+  if (detectDuplicates(ids)) {
+    throw new Error("There are multiple posts with the same id.");
+  }
+  
+  return parsedBodies;
+};
+
+var detectDuplicates = function(arr) {
+  arr.sort();
+  for (var index = 0; index < arr.length - 1; index++) {
+    var current = arr[index];
+    var next = arr[index + 1];
+    if (current === next) {
+      return true;
+    }
+  }
+  
+  return false;
 };

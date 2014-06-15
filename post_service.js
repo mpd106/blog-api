@@ -1,6 +1,6 @@
 /* global require, exports */
 
-var postSource = require('filesystem_post_source');
+var postSource = require('filesystem_post_source')('./tests/posts');
 
 var _indexedPosts;
 
@@ -24,10 +24,11 @@ var initializePosts = function(callback) {
   //  return;
   //}
   
-  postSource.getPosts(null, function(posts) {
-    _indexedPosts = indexPosts(posts);
-    callback(_indexedPosts);
-  });
+  postSource.getPosts().
+    then(function(posts) {
+      _indexedPosts = indexPosts(posts);
+      callback(_indexedPosts);
+    });
 };
 
 var indexPosts = function(posts) {
