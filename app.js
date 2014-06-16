@@ -15,14 +15,14 @@ app.get('/', function(req, res) {
 app.get('/posts', function(req, res) {
   postService.getPosts().
     then(function(posts) {
-      res.json(posts);
+      res.jsonp(posts);
     });
 });
 
 app.get('/posts/:id', function(req, res) {
   postService.getPost(req.params.id).
     then(function(post) {
-      res.json(post);
+      res.jsonp(post);
     });
 });
 
