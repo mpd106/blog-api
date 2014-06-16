@@ -3,7 +3,7 @@
 var path = './tests/posts';
 var postSource = require('filesystem_post_source')(path);
 
-exports.should_load_multiple_messages = function(test) {
+exports.should_load_multiple_posts = function(test) {
   test.expect(1);
   var postsPromise = postSource.getPosts();
   postsPromise.done(function(posts) {
@@ -12,7 +12,7 @@ exports.should_load_multiple_messages = function(test) {
   });
 };
 
-exports.should_decode_all_message_details = function(test) {
+exports.should_decode_all_post_details = function(test) {
   test.expect(6);
   postSource.getPosts().
     then(function(posts) {
@@ -27,7 +27,7 @@ exports.should_decode_all_message_details = function(test) {
     });
 };
 
-exports.should_return_empty_array_on_no_messages = function(test) {
+exports.should_return_empty_array_on_no_posts = function(test) {
   test.expect(1);
   var postSource = require('filesystem_post_source')('./tests/no_posts');
   var postsPromise = postSource.getPosts();

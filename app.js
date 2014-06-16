@@ -1,7 +1,9 @@
 /* globals require, process */
 
 var express = require('express');
-var post_service = require('post_service');
+var postSource = require('filesystem_post_source')('./posts');
+var postCache = require('post_cache')(postSource);
+var postService = require('post_service')(postCache);
 
 var app = express();
 
@@ -11,15 +13,17 @@ app.get('/', function(req, res) {
 });
 
 app.get('/posts', function(req, res) {
-  post_service.getPosts(function(posts) {
-    res.json(posts);
-  });
+  postService.getPosts().
+    then(function(posts) {
+      res.json(posts);
+    });
 });
 
 app.get('/posts/:id', function(req, res) {
-  post_service.getPost(req.params.id, function(post) {
-    res.json(post);
-  });
+  postService.getPost(req.params.id).
+    then(function(post) {
+      res.json(post);
+    });
 });
 
 app.listen(process.env.PORT || 4730);
