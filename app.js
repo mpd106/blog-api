@@ -7,6 +7,12 @@ var postService = require('post_service')(postCache);
 
 var app = express();
 
+app.all('*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
+
 app.get('/', function(req, res) {
 	res.type('text/plain');
 	res.send('mpd106 api');
@@ -15,14 +21,14 @@ app.get('/', function(req, res) {
 app.get('/posts', function(req, res) {
   postService.getPosts().
     then(function(posts) {
-      res.jsonp(posts);
+      res.json(posts);
     });
 });
 
 app.get('/posts/:id', function(req, res) {
   postService.getPost(req.params.id).
     then(function(post) {
-      res.jsonp(post);
+      res.json(post);
     });
 });
 
