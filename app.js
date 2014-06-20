@@ -1,9 +1,9 @@
 /* globals require, process */
 
 var express = require('express');
-var postSource = require('libs/filesystem_post_source')('./posts');
-var postCache = require('libs/post_cache')(postSource);
-var postService = require('libs/post_service')(postCache);
+var postSource = require('./libs/filesystem_post_source')('./posts');
+var postCache = require('./libs/post_cache')(postSource);
+var postService = require('./libs/post_service')(postCache);
 
 var app = express();
 
